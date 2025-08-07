@@ -1,0 +1,56 @@
+# Example Terraform variables file
+# Copy this file to terraform.tfvars and update with your values
+
+# Required Variables
+project_id = "your-gcp-project-id"
+
+# Optional Variables (uncomment and modify as needed)
+# region = "us-central1"
+# zone = "us-central1-a"
+# environment = "dev"
+
+# Pub/Sub Configuration
+# pubsub_topic_name = "iot-temp-vibration-data"
+# pubsub_subscription_name = "iot-temp-vibration-subscription"
+# pubsub_dead_letter_topic = "iot-dead-letter-topic"
+
+# BigQuery Configuration
+# bigquery_dataset_id = "iot_data"
+# bigquery_table_id = "sensor_readings"
+# bigquery_ml_table_id = "ml_predictions"
+# bigquery_location = "US"
+
+# Cloud Storage Configuration
+# ml_model_bucket_name = "iot-ml-models"
+# data_backup_bucket_name = "iot-data-backups"
+
+# Service Account Configuration
+# service_account_name = "iot-anomaly-dataflow"
+
+# Monitoring Configuration
+# enable_monitoring = true
+# log_retention_days = 30
+
+# ML Configuration
+# ml_model_version = "v1.0.0"
+# anomaly_threshold = 0.1
+
+# Network Configuration (for compute instances)
+# enable_compute_instances = false
+# vpc_name = "iot-vpc"
+# subnet_name = "iot-subnet"
+# subnet_cidr = "10.0.0.0/24"
+# enable_private_google_access = true
+# allowed_ip_ranges = ["0.0.0.0/0"]  # Restrict this in production
+
+# Compute Configuration
+# compute_machine_type = "e2-medium"
+
+# Kubernetes Configuration (for future GKE deployment)
+# enable_gke = false
+# gke_cluster_name = "iot-ml-cluster"
+# gke_node_count = 3
+
+# Cost Management
+# budget_amount = 100
+# budget_alert_threshold = 80

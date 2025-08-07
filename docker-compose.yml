@@ -1,0 +1,205 @@
+
+services:
+  iot-simulator:
+    build: ./simulator
+    environment:
+      - PROJECT_ID=zeltask-staging-464722
+      - TOPIC_NAME=iot-temp-vibration-data
+      - NUM_DEVICES=50
+      - PUBLISH_INTERVAL=10
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+    volumes:
+      - ./simulator/iot_simulator.py:/app/iot_simulator.py
+      - ./simulator/test-pubsub.py:/app/test-pubsub.py
+      - ./simulator/credentials.json:/app/credentials.json
+    networks:
+      - iot-network
+
+  data-consumer:
+    build:
+      context: ./data-consumer
+      dockerfile: Dockerfile
+    environment:
+      - PROJECT_ID=zeltask-staging-464722
+      - SUBSCRIPTION_NAME=iot-data-subscription
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+    volumes:
+      - ./simulator/credentials.json:/app/credentials.json:ro
+    networks:
+      - iot-network
+
+  dataflow:
+    build:
+      context: ./dataflow
+      dockerfile: Dockerfile
+    environment:
+      - PROJECT_ID=zeltask-staging-464722
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+    volumes:
+      - ./simulator/credentials.json:/app/credentials.json:ro
+    depends_on:
+      - ml-server
+    networks:
+      - iot-network
+
+  ml-trainer:
+    build:
+      context: ./ml-trainer
+      dockerfile: Dockerfile
+    environment:
+      - PROJECT_ID=zeltask-staging-464722
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+    volumes:
+      - ./simulator/credentials.json:/app/credentials.json:ro
+      - ./ml-models:/app/ml-models
+    networks:
+      - iot-network
+
+  ml-server:
+    build:
+      context: ./ml-server
+      dockerfile: Dockerfile
+    environment:
+      - PROJECT_ID=zeltask-staging-464722
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+    volumes:
+      - ./simulator/credentials.json:/app/credentials.json:ro
+      - ./ml-models:/app/ml-models
+    ports:
+      - "8000:8000"
+    networks:
+      - iot-network
+
+  streamlit-dashboard:
+    build:
+      context: ./streamlit-dashboard
+      dockerfile: Dockerfile
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+    volumes:
+      - ./simulator/credentials.json:/app/credentials.json:ro
+    ports:
+      - "8501:8501"
+    depends_on:
+      - ml-server
+    networks:
+      - iot-network
+
+  jupyter:
+    build:
+      context: .
+      dockerfile: jupyter/Dockerfile
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/app/notebooks
+      - ./data:/app/data
+    networks:
+      - iot-network
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana-storage:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+    depends_on:
+      - prometheus
+    networks:
+      - iot-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+      - '--web.enable-admin-api'
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus-storage:/prometheus
+    networks:
+      - iot-network
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager:/etc/alertmanager
+      - alertmanager-storage:/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
+      - '--web.external-url=http://localhost:9093'
+    networks:
+      - iot-network
+
+  node-exporter:
+    image: prom/node-exporter:latest
+    ports:
+      - "9100:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    networks:
+      - iot-network
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    ports:
+      - "8080:8080"
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    privileged: true
+    devices:
+      - /dev/kmsg
+    networks:
+      - iot-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - iot-network
+
+  # pubsub-emulator:
+  #   image: google/cloud-sdk:latest
+  #   command: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085
+  #   ports:
+  #     - "8085:8085"
+  #   environment:
+  #     - PUBSUB_PROJECT1=zeltask-staging-464722
+  #   networks:
+  #     - iot-network
+
+volumes:
+  grafana-storage:
+  prometheus-storage:
+  alertmanager-storage:
+
+networks:
+  iot-network:
+    driver: bridge

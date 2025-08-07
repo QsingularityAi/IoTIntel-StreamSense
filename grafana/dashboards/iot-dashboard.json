@@ -1,0 +1,184 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "IoT Anomaly Detection Dashboard",
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 0,
+    "refresh": "5s",
+    "panels": [
+      {
+        "id": 1,
+        "type": "graph",
+        "title": "Temperature Readings Over Time",
+        "gridPos": {
+          "x": 0,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "target": "iot_temperature"
+          }
+        ],
+        "xaxis": {
+          "mode": "time"
+        },
+        "yaxes": [
+          {
+            "format": "celsius",
+            "label": "Temperature (°C)"
+          },
+          {
+            "format": "short"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "type": "graph",
+        "title": "Vibration Readings Over Time",
+        "gridPos": {
+          "x": 12,
+          "y": 0,
+          "w": 12,
+          "h": 8
+        },
+        "targets": [
+          {
+            "target": "iot_vibration"
+          }
+        ],
+        "xaxis": {
+          "mode": "time"
+        },
+        "yaxes": [
+          {
+            "format": "velocity",
+            "label": "Vibration (mm/s RMS)"
+          },
+          {
+            "format": "short"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "type": "stat",
+        "title": "Total Devices",
+        "gridPos": {
+          "x": 0,
+          "y": 8,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "target": "iot_devices_total"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        }
+      },
+      {
+        "id": 4,
+        "type": "stat",
+        "title": "Active Anomalies",
+        "gridPos": {
+          "x": 6,
+          "y": 8,
+          "w": 6,
+          "h": 4
+        },
+        "targets": [
+          {
+            "target": "iot_anomalies_active"
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": [
+              "lastNotNull"
+            ]
+          }
+        }
+      },
+      {
+        "id": 5,
+        "type": "graph",
+        "title": "Anomaly Detection Rate",
+        "gridPos": {
+          "x": 12,
+          "y": 8,
+          "w": 12,
+          "h": 4
+        },
+        "targets": [
+          {
+            "target": "iot_anomaly_detection_rate"
+          }
+        ],
+        "xaxis": {
+          "mode": "time"
+        },
+        "yaxes": [
+          {
+            "format": "percent",
+            "label": "Detection Rate (%)"
+          },
+          {
+            "format": "short"
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "type": "table",
+        "title": "Recent Anomalies",
+        "gridPos": {
+          "x": 0,
+          "y": 12,
+          "w": 24,
+          "h": 8
+        },
+        "targets": [
+          {
+            "target": "iot_recent_anomalies"
+          }
+        ],
+        "transform": "table",
+        "columns": [
+          {
+            "text": "Device ID",
+            "value": "device_id"
+          },
+          {
+            "text": "Timestamp",
+            "value": "timestamp"
+          },
+          {
+            "text": "Temperature",
+            "value": "temperature"
+          },
+          {
+            "text": "Vibration",
+            "value": "vibration"
+          },
+          {
+            "text": "Anomaly Type",
+            "value": "anomaly_type"
+          }
+        ]
+      }
+    ]
+  },
+  "overwrite": true
+}

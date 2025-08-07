@@ -1,0 +1,112 @@
+groups:
+  - name: iot_ml_system_alerts
+    rules:
+      # High CPU usage alert
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 2m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage is above 80% for more than 2 minutes on {{ $labels.instance }}"
+
+      # High memory usage alert
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 2m
+        labels:
+          severity: warning
+          service: system
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage is above 85% for more than 2 minutes on {{ $labels.instance }}"
+
+      # ML Server down alert
+      - alert: MLServerDown
+        expr: up{job="ml-server"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: ml-server
+        annotations:
+          summary: "ML Server is down"
+          description: "ML Server has been down for more than 1 minute"
+
+      # IoT Simulator down alert
+      - alert: IoTSimulatorDown
+        expr: up{job="iot-simulator"} == 0
+        for: 2m
+        labels:
+          severity: warning
+          service: iot-simulator
+        annotations:
+          summary: "IoT Simulator is down"
+          description: "IoT Simulator has been down for more than 2 minutes"
+
+      # Data Consumer down alert
+      - alert: DataConsumerDown
+        expr: up{job="data-consumer"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: data-consumer
+        annotations:
+          summary: "Data Consumer is down"
+          description: "Data Consumer has been down for more than 1 minute"
+
+      # High anomaly rate alert
+      - alert: HighAnomalyRate
+        expr: rate(ml_anomalies_detected_total[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: ml-server
+        annotations:
+          summary: "High anomaly detection rate"
+          description: "Anomaly detection rate is above 10% for the last 5 minutes"
+
+      # Low data ingestion rate
+      - alert: LowDataIngestionRate
+        expr: rate(iot_messages_processed_total[5m]) < 1
+        for: 3m
+        labels:
+          severity: warning
+          service: data-consumer
+        annotations:
+          summary: "Low data ingestion rate"
+          description: "Data ingestion rate is below 1 message per second for the last 3 minutes"
+
+      # Disk space alert
+      - alert: LowDiskSpace
+        expr: (node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) * 100 < 10
+        for: 1m
+        labels:
+          severity: critical
+          service: system
+        annotations:
+          summary: "Low disk space"
+          description: "Disk space is below 10% on {{ $labels.instance }}"
+
+      # Container restart alert
+      - alert: ContainerRestarted
+        expr: increase(container_start_time_seconds[1h]) > 0
+        for: 0m
+        labels:
+          severity: info
+          service: docker
+        annotations:
+          summary: "Container restarted"
+          description: "Container {{ $labels.name }} has been restarted"
+
+      # High response time alert
+      - alert: HighResponseTime
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 2m
+        labels:
+          severity: warning
+          service: api
+        annotations:
+          summary: "High API response time"
+          description: "95th percentile response time is above 1 second for the last 2 minutes"
