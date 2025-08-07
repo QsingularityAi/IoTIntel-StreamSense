@@ -12,4 +12,4 @@ COPY test_connection.py .
 COPY test_pipeline.py .
 
 # Command to run the pipeline
-CMD ["python", "pipeline.py", "--project_id", "zeltask-staging-464722", "--subscription_name", "iot-data-subscription", "--dataset_id", "iot_data", "--table_id", "sensor_readings"]
+CMD ["python", "pipeline.py", "--project_id", "iotintel-streamsense", "--subscription_name", "iot-data-subscription", "--dataset_id", "iot_data", "--table_id", "sensor_readings"]

@@ -21,7 +21,7 @@ st.set_page_config(
 )
 
 # Google Cloud configuration
-PROJECT_ID = "zeltask-staging-464722"
+PROJECT_ID = "iotintel-streamsense"
 
 @st.cache_data(ttl=30)  # Cache for 30 seconds
 def get_bigquery_data(hours_back=2):

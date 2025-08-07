@@ -11,7 +11,7 @@ import sys
 def test_project_access():
     """Test if we can access the GCP project"""
     
-    project_id = os.getenv('PROJECT_ID', 'zeltask-staging-464722')
+    project_id = os.getenv('PROJECT_ID', 'iotintel-streamsense')
     print(f"Testing access to project: {project_id}")
     
     # Test BigQuery access

@@ -13,7 +13,7 @@ def setup_pubsub():
     os.environ['PUBSUB_EMULATOR_HOST'] = 'localhost:8085'
     
     # Configuration
-    project_id = "zeltask-staging-464722"
+    project_id = "iotintel-streamsense"
     topic_name = "iot-temp-vibration-data" 
     subscription_name = "iot-temp-vibration-subscription"
     

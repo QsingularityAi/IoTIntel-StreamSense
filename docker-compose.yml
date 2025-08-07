@@ -3,7 +3,7 @@ services:
   iot-simulator:
     build: ./simulator
     environment:
-      - PROJECT_ID=zeltask-staging-464722
+      - PROJECT_ID=iotintel-streamsense
       - TOPIC_NAME=iot-temp-vibration-data
       - NUM_DEVICES=50
       - PUBLISH_INTERVAL=10
@@ -20,7 +20,7 @@ services:
       context: ./data-consumer
       dockerfile: Dockerfile
     environment:
-      - PROJECT_ID=zeltask-staging-464722
+      - PROJECT_ID=iotintel-streamsense
       - SUBSCRIPTION_NAME=iot-data-subscription
       - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
     volumes:
@@ -33,7 +33,7 @@ services:
       context: ./dataflow
       dockerfile: Dockerfile
     environment:
-      - PROJECT_ID=zeltask-staging-464722
+      - PROJECT_ID=iotintel-streamsense
       - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
     volumes:
       - ./simulator/credentials.json:/app/credentials.json:ro
@@ -47,7 +47,7 @@ services:
       context: ./ml-trainer
       dockerfile: Dockerfile
     environment:
-      - PROJECT_ID=zeltask-staging-464722
+      - PROJECT_ID=iotintel-streamsense
       - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
     volumes:
       - ./simulator/credentials.json:/app/credentials.json:ro
@@ -60,7 +60,7 @@ services:
       context: ./ml-server
       dockerfile: Dockerfile
     environment:
-      - PROJECT_ID=zeltask-staging-464722
+      - PROJECT_ID=iotintel-streamsense
       - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
     volumes:
       - ./simulator/credentials.json:/app/credentials.json:ro
@@ -191,7 +191,7 @@ services:
   #   ports:
   #     - "8085:8085"
   #   environment:
-  #     - PUBSUB_PROJECT1=zeltask-staging-464722
+  #     - PUBSUB_PROJECT1=iotintel-streamsense
   #   networks:
   #     - iot-network
 

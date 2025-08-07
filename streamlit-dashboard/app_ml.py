@@ -23,7 +23,7 @@ st.set_page_config(
 )
 
 # Configuration
-PROJECT_ID = "zeltask-staging-464722"
+PROJECT_ID = "iotintel-streamsense"
 ML_SERVER_URL = "http://ml-server:8000"
 
 @st.cache_data(ttl=30)

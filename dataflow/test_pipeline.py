@@ -12,7 +12,7 @@ import time
 def test_pipeline_startup():
     """Test if the pipeline can start without errors"""
     
-    project_id = os.getenv('PROJECT_ID', 'zeltask-staging-464722')
+    project_id = os.getenv('PROJECT_ID', 'iotintel-streamsense')
     subscription_name = 'iot-data-subscription'
     dataset_id = 'iot_data'
     table_id = 'sensor_readings'

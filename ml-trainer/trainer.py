@@ -202,7 +202,7 @@ class AnomalyDetectionTrainer:
 
 def main():
     # Configuration - get from environment variables or use defaults
-    PROJECT_ID = os.getenv("PROJECT_ID", "zeltask-staging-464722")  # Use the correct project ID
+    PROJECT_ID = os.getenv("PROJECT_ID", "iotintel-streamsense")  # Use the correct project ID
     
     # Create trainer
     trainer = AnomalyDetectionTrainer(project_id=PROJECT_ID)

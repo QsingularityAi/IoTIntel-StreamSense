@@ -8,7 +8,7 @@ import json
 from google.cloud import pubsub_v1
 
 def test_publish():
-    project_id = 'zeltask-staging-464722'
+    project_id = 'iotintel-streamsense'
     topic_name = 'iot-temp-vibration-data'
     
     print(f"Testing Pub/Sub publishing to Google Cloud...")

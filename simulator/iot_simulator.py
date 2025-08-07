@@ -217,7 +217,7 @@ class IoTDeviceSimulator:
 
 def main():
     # Configuration - get from environment variables or use defaults
-    PROJECT_ID = os.getenv("PROJECT_ID", "zeltask-staging-464722")  # Use the correct project ID
+    PROJECT_ID = os.getenv("PROJECT_ID", "iotintel-streamsense")  # Use the correct project ID
     TOPIC_NAME = os.getenv("TOPIC_NAME", "iot-temp-vibration-data")
     NUM_DEVICES = int(os.getenv("NUM_DEVICES", "50"))
     PUBLISH_INTERVAL = int(os.getenv("PUBLISH_INTERVAL", "5"))  # seconds
